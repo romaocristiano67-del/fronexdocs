@@ -105,14 +105,17 @@ body { font-family: var(--font), sans-serif; background: var(--black); color: va
 .hi-btn.dl:hover { background: rgba(204,26,26,0.15); }
 
 /* ---- FORM / GENERATOR ---- */
-.gen-layout { display: grid; grid-template-columns: 1fr 380px; gap: 20px; padding: 2rem; min-height: calc(100vh - 64px); }
-.gen-form { display: flex; flex-direction: column; gap: 20px; }
-.form-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; }
+.gen-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 2rem; min-height: calc(100vh - 64px); }
+@media (max-width: 1024px) { .gen-layout { grid-template-columns: 1fr; } }
+.gen-form { display: flex; flex-direction: column; gap: 20px; overflow-y: auto; max-height: calc(100vh - 104px); padding-right: 4px; }
+.form-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; transition: border-color 0.2s ease; }
+.form-card:hover { border-color: rgba(255,255,255,0.12); }
 .form-card-title { font-size: 15px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 .form-card-title .step { width: 24px; height: 24px; background: var(--red); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
 .form-group { margin-bottom: 14px; }
 .form-label { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 6px; display: block; }
-.form-input { width: 100%; background: var(--black3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 13.5px; color: var(--text); font-family: var(--font), sans-serif; outline: none; transition: border-color 0.15s; }
+.form-input { width: 100%; background: var(--black3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 13.5px; color: var(--text); font-family: var(--font), sans-serif; outline: none; transition: all 0.2s ease; }
+.form-input:hover { border-color: rgba(255,255,255,0.15); }
 .form-input:focus { border-color: var(--red); }
 .form-input::placeholder { color: var(--text3); }
 .form-select { width: 100%; background: var(--black3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 13.5px; color: var(--text); font-family: var(--font), sans-serif; outline: none; cursor: pointer; }
@@ -131,7 +134,7 @@ body { font-family: var(--font), sans-serif; background: var(--black); color: va
 .generate-btn:disabled { background: var(--red-dark); cursor: wait; opacity: 0.7; transform: none; box-shadow: none; }
 
 /* ---- PREVIEW ---- */
-.preview-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); position: sticky; top: 20px; display: flex; flex-direction: column; height: fit-content; max-height: calc(100vh - 104px); overflow: hidden; }
+.preview-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); position: sticky; top: 84px; display: flex; flex-direction: column; height: calc(100vh - 104px); overflow: hidden; }
 .preview-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
 .preview-title { font-size: 14px; font-weight: 600; }
 .preview-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text3); }
@@ -153,15 +156,29 @@ body { font-family: var(--font), sans-serif; background: var(--black); color: va
   width: 210mm;
   min-height: 297mm;
   padding: 3cm 2cm 2cm 3cm; /* Margins Normas de Angola */
-  margin: 0 auto 20px auto;
+  margin: 0 auto;
   background: white;
   color: #0D0D0D;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 12px 40px rgba(0,0,0,0.12);
   page-break-after: always;
   font-size: 12pt;
   line-height: 1.5;
   box-sizing: border-box;
   position: relative;
+  transition: box-shadow 0.3s ease;
+  flex-shrink: 0;
+}
+.a4-page:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1), 0 20px 60px rgba(0,0,0,0.18);
+}
+
+/* Skeleton loading animation */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 @media print {
   .a4-page {
