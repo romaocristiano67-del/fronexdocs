@@ -13,6 +13,18 @@ export default function LoginPage() {
   const router = useRouter();
   const supabase = createClient();
 
+  const formatAuthError = (message) => {
+    const lower = (message || "").toLowerCase();
+
+    if (lower.includes("email rate limit exceeded")) {
+      return "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.";
+    }
+    if (lower.includes("invalid login credentials")) {
+      return "E-mail ou palavra-passe inválidos.";
+    }
+    return message || "Não foi possível concluir a autenticação.";
+  };
+
   const handleAuth = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -35,7 +47,7 @@ export default function LoginPage() {
         setError("Registo efetuado! Verifique o seu e-mail.");
       }
     } catch (err) {
-      setError(err.message);
+      setError(formatAuthError(err.message));
     } finally {
       setLoading(false);
     }
@@ -57,6 +69,9 @@ export default function LoginPage() {
       </div>
 
       <form onSubmit={handleAuth} className="gen-form">
+        <div className="text-[12px] text-[var(--text3)] -mt-2 mb-1">
+          Dica: se aparecer limite de e-mail, espere 2-5 minutos antes de tentar outra vez.
+        </div>
         <div className="form-group">
           <label className="form-label">E-mail</label>
           <input
