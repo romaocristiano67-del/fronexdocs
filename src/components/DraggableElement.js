@@ -2,7 +2,13 @@
 
 import React, { useState, useRef, useEffect } from "react";
 
-export default function DraggableElement({ children, defaultPosition = { x: 0, y: 0 }, onRemove }) {
+export default function DraggableElement({
+  children,
+  defaultPosition = { x: 0, y: 0 },
+  onRemove,
+  onSelect,
+  selected = false,
+}) {
   const [position, setPosition] = useState(defaultPosition);
   const [isDragging, setIsDragging] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -56,14 +62,16 @@ export default function DraggableElement({ children, defaultPosition = { x: 0, y
   return (
     <div
       onMouseDown={handleMouseDown}
+      onClick={() => onSelect?.()}
       style={{
         transform: `translate(${position.x}px, ${position.y}px)`,
         cursor: isDragging ? "grabbing" : "grab",
         display: "inline-block",
         position: "relative",
         userSelect: "none",
-        border: isDragging ? "2px dashed rgba(212,175,55,0.8)" : "2px solid transparent",
-        transition: isDragging ? "none" : "border 0.2s",
+        border: isDragging || selected ? "2px dashed rgba(212,175,55,0.85)" : "2px solid transparent",
+        transition: isDragging ? "none" : "border 0.2s, box-shadow 0.2s",
+        boxShadow: selected ? "0 0 0 2px rgba(212,175,55,0.25)" : "none",
         zIndex: isDragging ? 10 : 1
       }}
       className="draggable-wrapper group"
@@ -78,7 +86,7 @@ export default function DraggableElement({ children, defaultPosition = { x: 0, y
       </button>
 
       {/* Overlay to catch mouse events for children if they are images */}
-      <div style={{ position: "absolute", inset: 0, zIndex: 2 }}></div>
+      <div style={{ position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none" }}></div>
       <div style={{ position: "relative", zIndex: 1 }}>
         {children}
       </div>

@@ -239,14 +239,87 @@ function CurriculoRenderer({ data, previewData, hasFull }) {
   const cv = data || {
     nome: previewData?.nome || "",
     cargo: previewData?.cargo || "",
-    resumo: "...",
-    contactos: { email: "", telefone: "", morada: "" },
-    habilidades: [],
+    resumo: "Profissional dedicado, com foco em resultados e melhoria continua.",
+    contactos: { email: "email@exemplo.com", telefone: "+244 900 000 000", morada: "Luanda, Angola" },
+    habilidades: previewData?.habilidades ? previewData.habilidades.split(",").map((h) => h.trim()) : [],
     experiencia: [],
     educacao: []
   };
   const layout = previewData?.layout || "lateral";
   const foto = previewData?.foto || "";
+
+  const skills = cv.habilidades?.length ? cv.habilidades : ["Comunicação", "Liderança", "Organização"];
+  const experiencia = cv.experiencia?.length ? cv.experiencia : [{ empresa: "Empresa Exemplo", cargo: "Cargo", periodo: "2022 - Atual", descricao: "Responsável por operações, acompanhamento de equipa e melhoria contínua." }];
+  const educacao = cv.educacao?.length ? cv.educacao : [{ instituicao: "Universidade Exemplo", curso: "Licenciatura", periodo: "2018 - 2022" }];
+
+  if (layout === "topo") {
+    return (
+      <div className="a4-page" style={{ padding: 0 }}>
+        <div style={{ background: "#111", color: "#fff", padding: "28px 36px", display: "flex", alignItems: "center", gap: "18px" }}>
+          <div style={{ width: "92px", height: "92px", borderRadius: "50%", overflow: "hidden", border: "2px solid #D4AF37", background: "#222" }}>
+            {foto ? <img src={foto} alt="Foto do candidato" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : null}
+          </div>
+          <div>
+            <h1 style={{ margin: 0, fontSize: "24pt" }}>{cv.nome || "NOME COMPLETO"}</h1>
+            <p style={{ marginTop: "6px", color: "#D4AF37", fontWeight: 700 }}>{cv.cargo || "Cargo pretendido"}</p>
+          </div>
+        </div>
+        <div style={{ padding: "28px 36px" }}>
+          <section style={{ marginBottom: "18px" }}>
+            <h3 className="doc-section-title">Resumo Profissional</h3>
+            <p className="doc-text">{hasFull ? cv.resumo : "Resumo em processamento..."}</p>
+          </section>
+          <section style={{ marginBottom: "18px" }}>
+            <h3 className="doc-section-title">Experiência</h3>
+            {experiencia.map((item, i) => (
+              <div key={i} style={{ marginBottom: "10px" }}>
+                <strong>{item.cargo} - {item.empresa}</strong>
+                <div style={{ fontSize: "10pt", color: "#666" }}>{item.periodo}</div>
+                <p className="doc-text">{item.descricao}</p>
+              </div>
+            ))}
+          </section>
+          <section style={{ marginBottom: "18px" }}>
+            <h3 className="doc-section-title">Formação</h3>
+            {educacao.map((item, i) => (
+              <div key={i} className="doc-text">{item.curso} - {item.instituicao} ({item.periodo})</div>
+            ))}
+          </section>
+          <section>
+            <h3 className="doc-section-title">Habilidades</h3>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+              {skills.map((skill, i) => (
+                <span key={i} style={{ border: "1px solid #ddd", borderRadius: "14px", padding: "4px 10px", fontSize: "10pt" }}>{skill}</span>
+              ))}
+            </div>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
+  if (layout === "sem_foto") {
+    return (
+      <div className="a4-page" style={{ padding: "2.3cm 2cm 2cm 2.2cm" }}>
+        <h1 style={{ margin: 0, fontSize: "26pt", letterSpacing: "-0.5px" }}>{cv.nome || "NOME COMPLETO"}</h1>
+        <p style={{ marginTop: "6px", color: "#CC1A1A", fontWeight: 700 }}>{cv.cargo || "Cargo pretendido"}</p>
+        <div style={{ marginTop: "12px", fontSize: "10pt", color: "#555" }}>
+          {cv.contactos?.email} | {cv.contactos?.telefone} | {cv.contactos?.morada}
+        </div>
+        <hr style={{ margin: "16px 0", border: "none", borderTop: "1px solid #ddd" }} />
+        <div className="doc-section-title">Resumo</div>
+        <p className="doc-text">{hasFull ? cv.resumo : "Resumo em processamento..."}</p>
+        <div className="doc-section-title">Experiência Profissional</div>
+        {experiencia.map((item, i) => (
+          <div key={i} style={{ marginBottom: "8px" }}>
+            <strong>{item.cargo} - {item.empresa}</strong>
+            <div style={{ fontSize: "10pt", color: "#777" }}>{item.periodo}</div>
+            <p className="doc-text">{item.descricao}</p>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="a4-page" style={{ padding: 0 }}>
@@ -256,16 +329,30 @@ function CurriculoRenderer({ data, previewData, hasFull }) {
                 <DraggableElement>
                    {foto ? <img src={foto} alt="Foto do perfil" style={{ width: "100%", borderRadius: "10px" }} /> : <div style={{ height: "150px", background: "#333", borderRadius: "10px" }}></div>}
                 </DraggableElement>
-                <div style={{ marginTop: "20px" }}>
+                <div style={{ marginTop: "20px", fontSize: "9pt", lineHeight: 1.6 }}>
                    <h3 style={{ borderBottom: "1px solid #D4AF37", paddingBottom: "5px" }}>CONTACTO</h3>
-                   <p style={{ fontSize: "9pt" }}>{cv.contactos.email}</p>
+                   <p>{cv.contactos.email}</p>
+                   <p>{cv.contactos.telefone}</p>
+                   <p>{cv.contactos.morada}</p>
+                   <h3 style={{ borderBottom: "1px solid #D4AF37", paddingBottom: "5px", marginTop: "14px" }}>HABILIDADES</h3>
+                   {skills.map((skill, i) => <p key={i}>• {skill}</p>)}
                 </div>
              </div>
           )}
           <div style={{ flex: 1, padding: "40px" }}>
              <h1 style={{ margin: 0 }}>{cv.nome || "NOME"}</h1>
              <p style={{ color: "#D4AF37", fontWeight: 700 }}>{cv.cargo}</p>
-             <div style={{ marginTop: "20px" }}>{hasFull ? <p>{cv.resumo}</p> : <SkeletonBlock lines={5} />}</div>
+             <div style={{ marginTop: "20px" }}>{hasFull ? <p className="doc-text">{cv.resumo}</p> : <SkeletonBlock lines={5} />}</div>
+             <div style={{ marginTop: "12px" }}>
+               <h3 className="doc-section-title">Experiência</h3>
+               {experiencia.map((item, i) => (
+                 <div key={i} style={{ marginBottom: "10px" }}>
+                   <strong>{item.cargo} - {item.empresa}</strong>
+                   <div style={{ fontSize: "10pt", color: "#666" }}>{item.periodo}</div>
+                   <p className="doc-text">{item.descricao}</p>
+                 </div>
+               ))}
+             </div>
           </div>
        </div>
     </div>
@@ -273,14 +360,23 @@ function CurriculoRenderer({ data, previewData, hasFull }) {
 }
 
 function ConviteRenderer({ data, previewData, hasFull }) {
-  const c = data || { titulo: previewData?.evento || "EVENTO", mensagem: "...", data_hora: "..." };
+  const c = data || { titulo: previewData?.evento || "EVENTO", mensagem: "...", data_hora: previewData?.detalhes || "Data e hora", local: "Local do evento" };
+  const cardBackground = previewData?.fundo_imagem ? `url(${previewData.fundo_imagem})` : "linear-gradient(135deg, #faf4e8, #fbeee0)";
   return (
-    <div className="a4-page" style={{ backgroundImage: `url(${previewData?.fundo_imagem})`, backgroundSize: "cover", display: "flex", alignItems: "center", justifyContent: "center" }}>
-       <div style={{ background: "rgba(255,255,255,0.9)", padding: "40px", textAlign: "center", border: "5px double #D4AF37" }}>
+    <div className="a4-page" style={{ background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", padding: "24mm" }}>
+       <div style={{ width: "100%", minHeight: "220mm", backgroundImage: cardBackground, backgroundSize: "cover", backgroundPosition: "center", padding: "34px", textAlign: "center", border: "5px double #D4AF37", borderRadius: "14px", boxShadow: "0 20px 40px rgba(0,0,0,0.15)" }}>
           <DraggableElement>
-             <h1 style={{ fontFamily: "serif" }}>{c.titulo}</h1>
+             <h1 style={{ fontFamily: "serif", fontSize: "30pt", color: "#6c3b18" }}>{c.titulo}</h1>
           </DraggableElement>
-          <p>{hasFull ? c.mensagem : "A gerar convite..."}</p>
+          <p style={{ marginTop: "26px", fontSize: "12pt", color: "#3f2c1b", whiteSpace: "pre-wrap", lineHeight: 1.8 }}>
+            {hasFull ? c.mensagem : "A gerar convite..."}
+          </p>
+          <div style={{ marginTop: "28px", fontSize: "11pt", color: "#59391f", fontWeight: 600 }}>
+            {c.data_hora}
+          </div>
+          <div style={{ marginTop: "8px", fontSize: "11pt", color: "#70513a" }}>
+            {c.local || ""}
+          </div>
        </div>
     </div>
   );
@@ -294,7 +390,11 @@ export default function DocumentRenderer({ data, previewData, isGenerating, acti
   const sectionRefs = useRef({});
   const scrollContainerRef = useRef(null);
   const [scale, setScale] = useState(1);
+  const [zoom, setZoom] = useState(100);
   const [customBlocks, setCustomBlocks] = useState([]);
+  const [selectedBlockId, setSelectedBlockId] = useState(null);
+  const [draftText, setDraftText] = useState("");
+  const imageInputRef = useRef(null);
 
   const docType = data?.type || previewData?.docType || "trabalho";
   const showBorder = previewData?.showCoverBorder || false;
@@ -304,6 +404,26 @@ export default function DocumentRenderer({ data, previewData, isGenerating, acti
     documentTitle: data?.capa?.tema || previewData?.tema || "Documento",
   });
 
+  const handleExportWord = () => {
+    if (!componentRef.current) return;
+    const title = data?.capa?.tema || previewData?.tema || "documento";
+    const htmlContent = `
+      <html>
+        <head><meta charset="utf-8"></head>
+        <body>${componentRef.current.innerHTML}</body>
+      </html>
+    `;
+    const blob = new Blob([htmlContent], { type: "application/msword;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${title}.doc`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const hasFull = !!data;
   const hasPreview = previewData && Object.values(previewData).some(v => v && v !== "insignia" && v !== "Manhã" && v !== docType);
 
@@ -312,13 +432,13 @@ export default function DocumentRenderer({ data, previewData, isGenerating, acti
       if (scrollContainerRef.current) {
          const containerWidth = scrollContainerRef.current.clientWidth;
          const a4Width = 210 * 3.78; 
-         setScale(Math.min((containerWidth - 60) / a4Width, 1));
+         setScale(Math.min((containerWidth - 60) / a4Width, 1) * (zoom / 100));
       }
     };
     updateScale();
     window.addEventListener("resize", updateScale);
     return () => window.removeEventListener("resize", updateScale);
-  }, []);
+  }, [zoom]);
 
   useEffect(() => {
     if (activeSection && scrollContainerRef.current && sectionRefs.current[activeSection]) {
@@ -327,6 +447,47 @@ export default function DocumentRenderer({ data, previewData, isGenerating, acti
   }, [activeSection]);
 
   const setSectionRef = (key) => (el) => { sectionRefs.current[key] = el; };
+  const selectedBlock = customBlocks.find((b) => b.id === selectedBlockId);
+
+  const defaultTextStyle = {
+    fontSize: 14,
+    color: "#111111",
+    fontWeight: 400,
+    fontStyle: "normal",
+    textDecoration: "none",
+    textAlign: "left",
+  };
+
+  const createTextBlock = () => {
+    const id = Date.now();
+    const block = {
+      id,
+      type: "text",
+      content: draftText || "Novo bloco de texto editável",
+      style: defaultTextStyle,
+    };
+    setCustomBlocks((prev) => [...prev, block]);
+    setSelectedBlockId(id);
+  };
+
+  const updateSelectedBlock = (patch) => {
+    if (!selectedBlockId) return;
+    setCustomBlocks((prev) =>
+      prev.map((b) => (b.id === selectedBlockId ? { ...b, ...patch, style: { ...b.style, ...(patch.style || {}) } } : b))
+    );
+  };
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files?.[0];
+    if (!file || !file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const id = Date.now();
+      setCustomBlocks((prev) => [...prev, { id, type: "image", content: e.target.result, style: { width: 220 } }]);
+      setSelectedBlockId(id);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const renderContent = () => {
     let content = null;
@@ -341,11 +502,42 @@ export default function DocumentRenderer({ data, previewData, isGenerating, acti
           <div style={{ position: "absolute", top: 0, left: 0, width: "100%", pointerEvents: "none" }}>
              {customBlocks.map(block => (
                 <div key={block.id} style={{ pointerEvents: "auto" }}>
-                   <DraggableElement onRemove={() => setCustomBlocks(customBlocks.filter(b => b.id !== block.id))}>
+                   <DraggableElement
+                      selected={selectedBlockId === block.id}
+                      onSelect={() => setSelectedBlockId(block.id)}
+                      onRemove={() => {
+                        setCustomBlocks((prev) => prev.filter((b) => b.id !== block.id));
+                        if (selectedBlockId === block.id) setSelectedBlockId(null);
+                      }}
+                   >
                       {block.type === 'text' ? (
-                         <div contentEditable suppressContentEditableWarning style={{ padding: "10px", fontSize: "14pt", minWidth: "100px", color: "black" }}>{block.content}</div>
+                         <div
+                          contentEditable
+                          suppressContentEditableWarning
+                          onInput={(e) => {
+                            const text = e.currentTarget.innerText;
+                            setCustomBlocks((prev) => prev.map((b) => (b.id === block.id ? { ...b, content: text } : b)));
+                          }}
+                          style={{
+                            padding: "10px 12px",
+                            fontSize: `${block.style?.fontSize || 14}pt`,
+                            minWidth: "160px",
+                            maxWidth: "420px",
+                            color: block.style?.color || "#111",
+                            background: "rgba(255,255,255,0.75)",
+                            borderRadius: "8px",
+                            outline: "none",
+                            fontWeight: block.style?.fontWeight || 400,
+                            fontStyle: block.style?.fontStyle || "normal",
+                            textDecoration: block.style?.textDecoration || "none",
+                            textAlign: block.style?.textAlign || "left",
+                            whiteSpace: "pre-wrap",
+                          }}
+                         >
+                           {block.content}
+                         </div>
                       ) : (
-                         <img src={block.content} alt="Bloco personalizado" style={{ maxWidth: "200px" }} />
+                         <img src={block.content} alt="Bloco personalizado" style={{ maxWidth: `${block.style?.width || 220}px`, borderRadius: "8px" }} />
                       )}
                    </DraggableElement>
                 </div>
@@ -367,13 +559,52 @@ export default function DocumentRenderer({ data, previewData, isGenerating, acti
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", position: "relative" }}>
-      <div style={{ position: "absolute", bottom: "20px", right: "20px", display: "flex", flexDirection: "column", gap: "8px", zIndex: 100 }}>
-         <button onClick={() => setCustomBlocks([...customBlocks, { id: Date.now(), type: 'text', content: 'Novo Texto' }])} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "var(--red)", color: "white", border: "none", cursor: "pointer", boxShadow: "0 4px 12px rgba(0,0,0,0.3)" }}>T</button>
+      <input ref={imageInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleImageUpload} />
+
+      <div className="doc-toolbar">
+        <div className="doc-toolbar-group">
+          <input
+            className="doc-toolbar-input"
+            value={draftText}
+            onChange={(e) => setDraftText(e.target.value)}
+            placeholder="Texto rápido para inserir..."
+          />
+          <button className="doc-toolbar-btn" onClick={createTextBlock}>+ Texto</button>
+          <button className="doc-toolbar-btn" onClick={() => imageInputRef.current?.click()}>+ Imagem</button>
+          <button className="doc-toolbar-btn" onClick={() => setZoom((z) => Math.max(60, z - 10))}>-</button>
+          <span className="doc-toolbar-chip">{zoom}%</span>
+          <button className="doc-toolbar-btn" onClick={() => setZoom((z) => Math.min(150, z + 10))}>+</button>
+        </div>
+
+        {selectedBlock?.type === "text" && (
+          <div className="doc-toolbar-group">
+            <button className="doc-toolbar-btn" onClick={() => updateSelectedBlock({ style: { fontWeight: selectedBlock.style?.fontWeight === 700 ? 400 : 700 } })}>B</button>
+            <button className="doc-toolbar-btn" onClick={() => updateSelectedBlock({ style: { fontStyle: selectedBlock.style?.fontStyle === "italic" ? "normal" : "italic" } })}>I</button>
+            <button className="doc-toolbar-btn" onClick={() => updateSelectedBlock({ style: { textDecoration: selectedBlock.style?.textDecoration === "underline" ? "none" : "underline" } })}>U</button>
+            <select className="doc-toolbar-select" value={selectedBlock.style?.fontSize || 14} onChange={(e) => updateSelectedBlock({ style: { fontSize: Number(e.target.value) } })}>
+              {[10, 11, 12, 13, 14, 16, 18, 20, 24].map((n) => <option key={n} value={n}>{n} pt</option>)}
+            </select>
+            <input type="color" value={selectedBlock.style?.color || "#111111"} onChange={(e) => updateSelectedBlock({ style: { color: e.target.value } })} />
+            <select className="doc-toolbar-select" value={selectedBlock.style?.textAlign || "left"} onChange={(e) => updateSelectedBlock({ style: { textAlign: e.target.value } })}>
+              <option value="left">Esquerda</option>
+              <option value="center">Centro</option>
+              <option value="right">Direita</option>
+            </select>
+          </div>
+        )}
+
+        {selectedBlock?.type === "image" && (
+          <div className="doc-toolbar-group">
+            <span className="doc-toolbar-chip">Largura</span>
+            <input type="range" min="120" max="420" value={selectedBlock.style?.width || 220} onChange={(e) => updateSelectedBlock({ style: { width: Number(e.target.value) } })} />
+          </div>
+        )}
       </div>
 
       {hasFull && (
-        <div style={{ padding: "10px", background: "var(--surface)", borderBottom: "1px solid var(--border)", flexShrink: 0 }}>
+        <div style={{ padding: "10px", background: "var(--surface)", borderBottom: "1px solid var(--border)", flexShrink: 0, display: "flex", gap: "8px" }}>
           <button className="dl-btn dl-pdf" style={{ width: "100%" }} onClick={handlePrint}>⬇ Exportar PDF</button>
+          <button className="dl-btn dl-docx" style={{ width: "100%" }} onClick={handleExportWord}>⬇ Exportar Word</button>
         </div>
       )}
 
