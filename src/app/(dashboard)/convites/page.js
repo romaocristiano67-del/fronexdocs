@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { generateDocAction } from "@/app/actions/generate-doc";
 import DocumentRenderer from "@/components/DocumentRenderer";
+import ImageUploader from "@/components/ImageUploader";
 
 export default function ConvitesPage() {
   const [loading, setLoading] = useState(false);
@@ -17,6 +18,7 @@ export default function ConvitesPage() {
     evento: "",
     anfitriao: "",
     detalhes: "",
+    fundo_imagem: "",
   });
 
   function handleFieldChange(field, value) {
@@ -28,6 +30,7 @@ export default function ConvitesPage() {
     setLoading(true); setError(null); setRequiresUpgrade(false); setIsDemo(false);
     const formData = new FormData(event.target);
     formData.append("docType", "convite");
+    formData.append("fundo_imagem", previewData.fundo_imagem);
 
     try {
       const result = await generateDocAction(formData);
@@ -92,6 +95,15 @@ export default function ConvitesPage() {
               onChange={(e) => handleFieldChange("detalhes", e.target.value)}
               required
             ></textarea>
+          </div>
+          <div className="form-group" style={{ marginTop: "12px" }}>
+            <ImageUploader 
+              label="Fundo Personalizado (Opcional)" 
+              value={previewData.fundo_imagem} 
+              onChange={(val) => handleFieldChange("fundo_imagem", val)} 
+              placeholder="Clique ou arraste uma imagem de fundo (fundo floral, textura, etc.)"
+              circle={false}
+            />
           </div>
         </div>
 

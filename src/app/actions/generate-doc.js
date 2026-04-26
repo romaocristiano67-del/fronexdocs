@@ -167,7 +167,7 @@ export async function generateDocAction(formData) {
   let userMessage = "";
 
   if (docType === "trabalho") {
-    systemPrompt = `És um assistente educativo angolano especializado em trabalhos escolares. Retorna APENAS um JSON válido (sem markdown) com exactamente esta estrutura:
+    systemPrompt = `És um assistente educativo angolano especializado em trabalhos escolares de alta qualidade. Retorna APENAS um JSON válido (sem markdown) com esta estrutura:
 {
   "type": "trabalho",
   "tipo_logo": "${formFields.tipo_logo || 'insignia'}",
@@ -186,14 +186,19 @@ export async function generateDocAction(formData) {
   },
   "indice": [
     {"titulo": "1. Introdução"},
-    {"titulo": "2. Conclusão"},
-    {"titulo": "3. Bibliografia"}
+    {"titulo": "2. Conteúdo da Pesquisa"},
+    {"titulo": "3. Conclusão"},
+    {"titulo": "4. Bibliografia"}
   ],
-  "introducao": "Texto longo e académico da introdução em português angolano (AO), mínimo 4 parágrafos bem desenvolvidos.",
-  "conclusao": "Texto longo e académico da conclusão em português angolano (AO), mínimo 3 parágrafos.",
-  "bibliografia": ["Referência 1 no formato ABNT", "Referência 2", "Referência 3"]
+  "introducao": "Texto longo e académico (mínimo 6 parágrafos) em português angolano.",
+  "conteudo": [
+    {"titulo": "2.1 Aspectos Fundamentais", "texto": "Texto extenso e detalhado..."},
+    {"titulo": "2.2 Contextualização em Angola", "texto": "Texto extenso e detalhado..."}
+  ],
+  "conclusao": "Texto longo e reflexivo (mínimo 5 parágrafos).",
+  "bibliografia": ["Referência 1", "Referência 2", "Referência 3", "Referência 4"]
 }
-NÃO incluas o campo 'desenvolvimento'. Apenas: introducao, conclusao e bibliografia.`;
+Garante que o conteúdo é PROFUNDO e EXTENSO, digno de um estudante universitário ou do ensino médio técnico.`;
     userMessage = `Tema: ${formFields.tema}\nEscola: ${formFields.escola}\nDisciplina: ${formFields.disciplina}\nAutores: ${formFields.autores}\nClasse: ${formFields.classe} | Sala: ${formFields.sala} | Turma: ${formFields.turma} | Turno: ${formFields.turno} | Curso: ${formFields.curso}\nDocente: ${formFields.docente}\nInstruções adicionais: ${formFields.instrucoes}`;
   } else if (docType === "curriculo") {
     systemPrompt = `És um especialista em RH em Angola. Cria um CV profissional. Retorna JSON: { "type":"curriculo", "nome":"...", "cargo":"...", "resumo":"...", "contactos":{"email":"...","telefone":"...","morada":"..."}, "experiencia":[{"empresa":"...","cargo":"...","periodo":"...","descricao":"..."}], "educacao":[{"instituicao":"...","curso":"...","periodo":"..."}], "habilidades":["..."] }`;

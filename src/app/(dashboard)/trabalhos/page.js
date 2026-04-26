@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { generateDocAction } from "@/app/actions/generate-doc";
 import DocumentRenderer from "@/components/DocumentRenderer";
+import ImageUploader from "@/components/ImageUploader";
 
 const LOGO_OPTIONS = [
   { value: "insignia", label: "🦅 Insignia de Angola", desc: "Apenas o brasão da República" },
@@ -32,13 +33,15 @@ export default function TrabalhosEscolaresPage() {
     curso: "",
     docente: "",
     tipo_logo: "insignia",
+    escola_logo: "",
+    showCoverBorder: false,
   });
 
   function handleFieldChange(field, value) {
     setPreviewData((prev) => ({ ...prev, [field]: value }));
-    // Mostrar capa quando se edita campos da capa
-    const capaFields = ["escola", "disciplina", "tema", "autores", "classe", "sala", "turma", "turno", "curso", "docente", "tipo_logo"];
-    if (capaFields.includes(field)) setActiveSection("capa");
+    const capaFields = ["escola", "disciplina", "tema", "autores", "classe", "sala", "turma", "turno", "curso", "docente", "tipo_logo", "escola_logo", "showCoverBorder"];
+    if (capaFields.includes(field) && field !== "autores") setActiveSection("capa");
+    if (field === "autores") setActiveSection("integrantes");
   }
 
   // Auto-scroll no preview para a secção ativa
@@ -69,6 +72,7 @@ export default function TrabalhosEscolaresPage() {
     formData.append("curso", previewData.curso);
     formData.append("docente", previewData.docente);
     formData.append("tipo_logo", previewData.tipo_logo);
+    formData.append("escola_logo", previewData.escola_logo);
 
     try {
       const result = await generateDocAction(formData);
@@ -90,12 +94,16 @@ export default function TrabalhosEscolaresPage() {
   const navSections = generatedDoc
     ? [
         { key: "capa", label: "📄 Capa" },
+        { key: "integrantes", label: "👥 Integrantes" },
         { key: "indice", label: "📑 Índice" },
         { key: "introducao", label: "1. Introdução" },
         { key: "conclusao", label: "3. Conclusão" },
         { key: "bibliografia", label: "4. Bibliografia" },
       ]
-    : [{ key: "capa", label: "📄 Capa (Live)" }];
+    : [
+        { key: "capa", label: "📄 Capa (Live)" },
+        { key: "integrantes", label: "👥 Integrantes" },
+      ];
 
   return (
     <div className="gen-layout">
@@ -146,6 +154,29 @@ export default function TrabalhosEscolaresPage() {
                 <span style={{ fontSize: "10px", color: "var(--text3)" }}>{opt.desc}</span>
               </label>
             ))}
+          </div>
+          {(previewData.tipo_logo === "escola" || previewData.tipo_logo === "ambos") && (
+            <div style={{ marginTop: "16px" }}>
+              <ImageUploader 
+                label="Logótipo da Instituição" 
+                value={previewData.escola_logo} 
+                onChange={(val) => handleFieldChange("escola_logo", val)} 
+                placeholder="Clique ou arraste o logo da escola aqui"
+                circle={true}
+              />
+            </div>
+          )}
+          <div className="form-group" style={{ marginTop: "10px", display: "flex", alignItems: "center", gap: "10px" }}>
+             <input 
+                type="checkbox" 
+                id="showCoverBorder" 
+                checked={previewData.showCoverBorder}
+                onChange={(e) => handleFieldChange("showCoverBorder", e.target.checked)}
+                style={{ width: "18px", height: "18px", accentColor: "var(--red)" }}
+             />
+             <label htmlFor="showCoverBorder" className="form-label" style={{ marginBottom: 0, cursor: "pointer" }}>
+                Adicionar Borda apenas na Capa
+             </label>
           </div>
         </div>
 

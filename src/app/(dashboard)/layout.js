@@ -42,7 +42,7 @@ export default async function DashboardLayout({ children }) {
           <Link href="/planos" className="plan-badge">
             {planLabel}
           </Link>
-          <button className="nav-btn ghost">Conta</button>
+          <Link href="/conta" className="nav-btn ghost">Conta</Link>
           <Link href="/planos" className="nav-btn primary">
             Fazer Upgrade
           </Link>

@@ -71,6 +71,12 @@ export default function Sidebar({ usageCount = 0, maxCount = 2 }) {
         >
           <span className="si-icon">💎</span> Planos
         </Link>
+        <Link
+          href="/conta"
+          className={`sidebar-item ${pathname === "/conta" ? "active" : ""}`}
+        >
+          <span className="si-icon">👤</span> Conta
+        </Link>
       </div>
 
       <div style={{ flex: 1 }}></div>

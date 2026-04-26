@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fronex Docs - Relatorio de Melhorias</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #0f0f10; color: #f2f2f2; }
+    .wrap { max-width: 980px; margin: 24px auto; padding: 20px; }
+    .card { background: #17181a; border: 1px solid #2b2d31; border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+    h1, h2 { margin-top: 0; }
+    h1 { color: #d4af37; }
+    .ok { color: #57d17a; font-weight: bold; }
+    .warn { color: #ffd166; font-weight: bold; }
+    code { background: #23252a; padding: 2px 6px; border-radius: 6px; }
+    ul { margin: 8px 0 0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Fronex Docs SaaS - Mudancas aplicadas</h1>
+
+    <div class="card">
+      <h2>1) Seguranca e autenticacao</h2>
+      <ul>
+        <li>Removido modo "preview sem auth" no middleware de sessao.</li>
+        <li>Rotas privadas agora redirecionam para <code>/login</code> sem utilizador autenticado.</li>
+        <li>Criado <code>src/proxy.js</code> para alinhar com Next.js 16 e evitar deprecacao do middleware.</li>
+      </ul>
+      <p class="ok">Status: reforcado</p>
+    </div>
+
+    <div class="card">
+      <h2>2) Banco de dados e variaveis criticas</h2>
+      <ul>
+        <li>Removido fallback "dummy" no cliente/servidor Supabase.</li>
+        <li>Agora, sem <code>NEXT_PUBLIC_SUPABASE_URL</code> e <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>, o app falha de forma explicita.</li>
+        <li><code>.env.example</code> atualizado com <code>OPENAI_API_KEY</code>.</li>
+      </ul>
+      <p class="warn">Observacao: funcionalidade real do banco depende de credenciais corretas no ambiente.</p>
+    </div>
+
+    <div class="card">
+      <h2>3) Conta e planos</h2>
+      <ul>
+        <li>Criada pagina <code>/conta</code> com dados de email, plano, uso diario e data de criacao.</li>
+        <li>Adicionado botao de terminar sessao na pagina de conta.</li>
+        <li>Navegacao atualizada no topo e sidebar para acesso direto a <code>/conta</code>.</li>
+      </ul>
+      <p class="ok">Status: funcional em termos de interface e fluxo com Supabase.</p>
+    </div>
+
+    <div class="card">
+      <h2>4) Deploy no Netlify</h2>
+      <ul>
+        <li><code>netlify.toml</code> ajustado com <code>NODE_VERSION=20</code> e bundling via <code>esbuild</code>.</li>
+        <li>Plugin oficial Next.js mantido: <code>@netlify/plugin-nextjs</code>.</li>
+        <li>README atualizado com passos de deploy e variaveis necessarias.</li>
+      </ul>
+      <p class="ok">Status: preparado para deploy</p>
+    </div>
+
+    <div class="card">
+      <h2>5) Proximos passos recomendados</h2>
+      <ul>
+        <li>Configurar variaveis no Netlify e no ambiente local.</li>
+        <li>Executar o SQL de <code>database/schema.sql</code> no Supabase.</li>
+        <li>Validar fluxo real: registo, login, geracao, historico e upgrade de plano.</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

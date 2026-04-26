@@ -2,13 +2,28 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 
 export async function updateSession(request) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const pathname = request.nextUrl.pathname
+  const isAuthRoute = pathname.startsWith('/login')
+  const isPublicRoute = pathname === '/'
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    if (!isAuthRoute && !isPublicRoute) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/login'
+      return NextResponse.redirect(url)
+    }
+    return NextResponse.next({ request })
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://dummy-project.supabase.co',
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy',
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
@@ -31,13 +46,7 @@ export async function updateSession(request) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // --- MODO DE PRÉ-VISUALIZAÇÃO (Sem Auth) ---
-  // Comentei a lógica de bloqueio para poderes navegar livremente
-  /*
-  const isAuthRoute = request.nextUrl.pathname.startsWith('/login');
-  
-  if (!user && !isAuthRoute && request.nextUrl.pathname !== '/') {
-    // no user, redirect to login
+  if (!user && !isAuthRoute && !isPublicRoute) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
@@ -48,7 +57,6 @@ export async function updateSession(request) {
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
   }
-  */
 
   return supabaseResponse
 }
