@@ -13,7 +13,7 @@ export async function updateSession(request) {
     pathname === '/favicon.ico' ||
     /\.[^/]+$/.test(pathname)
 
-  if (isStaticAsset || isAuthRoute) {
+  if (isStaticAsset || isAuthRoute || isPublicRoute) {
     return NextResponse.next({ request })
   }
 
