@@ -5,8 +5,17 @@ export async function updateSession(request) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   const pathname = request.nextUrl.pathname
-  const isAuthRoute = pathname.startsWith('/login')
+  const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/auth/callback')
   const isPublicRoute = pathname === '/'
+  const isStaticAsset =
+    pathname.startsWith('/_next/static') ||
+    pathname.startsWith('/_next/image') ||
+    pathname === '/favicon.ico' ||
+    /\.[^/]+$/.test(pathname)
+
+  if (isStaticAsset || isAuthRoute) {
+    return NextResponse.next({ request })
+  }
 
   if (!supabaseUrl || !supabaseAnonKey) {
     if (!isAuthRoute && !isPublicRoute) {

@@ -12,6 +12,10 @@ export default function LoginPage() {
   const [error, setError] = useState(null);
   const router = useRouter();
   const supabase = createClient();
+  const authCallbackUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/auth/callback`
+      : undefined;
 
   const formatAuthError = (message) => {
     const lower = (message || "").toLowerCase();
@@ -42,6 +46,9 @@ export default function LoginPage() {
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: authCallbackUrl,
+          },
         });
         if (error) throw error;
         setError("Registo efetuado! Verifique o seu e-mail.");
